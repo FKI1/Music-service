@@ -10,13 +10,25 @@ where duration >= 350;
 select name, release_year from collection
 where release_year between '2018' and '2020';
 
+--Самый продолжительный трек
+select title, duration from tracks
+where duration = (select MAX(duration) from tracks);
+
+--Продолжительность трека не менее 3,5 минут
+select title, duration from tracks
+where duration >= 350;
+
+--Название сборников, вышедших с 2018 по 2020 год включительно
+select name, release_year from collection
+where release_year between '2018' and '2020';
+
 --Испольнители из одного слова
 select name from artists
 where name not like '% %';
 
 --Название трека, содержащее слово "мой\my"
 select title from tracks
-where title like '%my%';
+where title ~* '(^|\s)my(\s|$)';
 
 --Количество исполнителей в каждом жанре
 SELECT 
@@ -33,19 +45,13 @@ ORDER BY
 
 --Количество треков, вошедших в альбомы 2019-2020 годов
 SELECT 
-    a.name AS album_name,
-    a.release_year AS release_year,
-    COUNT(t.tracks_id) AS tracks_count
+	COUNT(t.tracks_id) AS total_tracks_count
 FROM 
-    albums a
+	tracks t
 JOIN 
-    tracks t ON a.albums_id = t.albums_id
+	albums a ON t.albums_id = a.albums_id
 WHERE 
-    a.release_year BETWEEN 2019 AND 2020
-GROUP BY 
-    a.name, a.release_year
-ORDER BY 
-    a.release_year DESC, tracks_count DESC;
+	a.release_year BETWEEN 2019 AND 2020;
 
 --Средняя продолжительность треков по каждому альбому
 select 
@@ -73,38 +79,41 @@ WHERE a.artists_id not IN (
         al.release_year = 2020 )
 ORDER BY a.name;
 
--- Названия сборников, в которых присутствует исполнительтель 
+-- Названия сборников, в которых присутствует исполнитель 
 SELECT DISTINCT
-    al.title AS album_title
+    c.name AS collection_name
 FROM 
-    albums al
+    collection c
 JOIN 
-    tracks t ON al.albums_id = t.albums_id
+    collectiontracks ct ON c.collection_id = ct.collection_id
 JOIN 
-    artists a ON t.albums_id  = COALESCE(a.artists_id, a.artists_id)
+    tracks t ON ct.tracks_id = t.tracks_id
+JOIN 
+    albums a ON t.albums_id = a.albums_id
+JOIN 
+    albumsartists aa ON a.albums_id = aa.albums_id
+JOIN 
+    artists ar ON aa.artists_id = ar.artists_id
 WHERE 
-    a.name = 'Женя Трофимов';
+    ar.name = 'JONY'
 
 --Названия альбомов, в которых присутствуют исполнители более чем одного жанра
-SELECT 
-    al.title AS album_title,
-    COUNT(DISTINCT g.genres_id) AS distinct_genres_count
+SELECT DISTINCT
+    a.title AS album_title
 FROM 
-    albums al
+    albums a
 JOIN 
-    tracks t ON al.albums_id = t.albums_id
+    albumsartists aa ON a.albums_id = aa.albums_id
 JOIN 
-    artists a ON t.albums_id = a.artists_id
+    artists ar ON aa.artists_id = ar.artists_id
 JOIN 
-    ArtistsGenres ag ON a.artists_id = ag.artists_id
-JOIN 
-    genres g ON ag.genres_id = g.genres_id
+    artistsgenres ag ON ar.artists_id = ag.artists_id
 GROUP BY 
-    al.albums_id, al.title
+    a.albums_id, a.title, ar.artists_id  
 HAVING 
-    COUNT(DISTINCT g.genres_id) > 1
+    COUNT(DISTINCT ag.genres_id) > 1
 ORDER BY 
-    distinct_genres_count DESC, al.title;
+    a.title;
 
 --Наименования треков, которые не входят в сборники
 SELECT 
@@ -112,9 +121,9 @@ SELECT
 FROM 
     tracks t
 LEFT JOIN 
-    albums al ON t.albums_id = al.albums_id
+    collection c ON t.collection_id = c.collection_id
 WHERE 
-    al.albums_id IS NULL;
+    c.collection_id IS NULL;
 
 --Названия альбомов, содержащих наименьшее количество треков.
 WITH album_track_counts AS (
