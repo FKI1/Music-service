@@ -80,7 +80,7 @@ INSERT INTO Tracks(name, title, duration, albums_id) VALUES
 ('Andro', 'Романтики', 220, 10),
 ('Andro', 'Накопил монет', 247, 10),
 ('Andro', 'Gita', 254, 11),
-('Andro', 'Gipsy Drill', 255, 11)
+('Andro', 'Gipsy Drill', 255, 11);
 
 insert into collection(name, release_year) values
 ('Что бы она пела', 2022),
@@ -112,16 +112,15 @@ insert into collectiontracks(collection_id, tracks_id) values
 (6,14),
 (6,15),
 (7,16),
-(7,18),
+(7,17),
+(8,18),
 (8,19),
-(8,20),
+(9,20),
 (9,21),
-(9,22),
+(10,22),
 (10,23),
-(10,24),
-(11,25),
-(11,26);
-
+(11,24),
+(11,25);
 
 SELECT * FROM Artists;
 SELECT * FROM Genres;
