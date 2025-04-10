@@ -23,19 +23,15 @@
 	);
 	
 	create table if not exists ArtistsGenres(
-	artists_id integer references Artists(artists_id),
-	genres_id integer references Genres(genres_id),
-	FOREIGN KEY (artists_id) REFERENCES Artists(artists_id) ON DELETE CASCADE,
-    FOREIGN KEY (genres_id) REFERENCES Genres(genres_id) ON DELETE cascade,
-    constraint AG primary key (artists_id, genres_id)
+	artists_id integer REFERENCES Artists(artists_id) ON DELETE CASCADE,
+   	genres_id integer REFERENCES Genres(genres_id) ON DELETE cascade,
+    	constraint AG primary key (artists_id, genres_id)
 	);
 	
 	create table if not exists AlbumsArtists(
-	albums_id integer references Albums(albums_id),
-	artists_id integer references Artists(artists_id),
-	FOREIGN KEY (albums_id) REFERENCES Albums(albums_id) ON DELETE CASCADE,
-    FOREIGN KEY (artists_id) REFERENCES Artists(artists_id) ON DELETE cascade,
-    constraint AA primary key (albums_id, artists_id)
+	albums_id integer REFERENCES Albums(albums_id) ON DELETE CASCADE,
+   	artists_id integer REFERENCES Artists(artists_id) ON DELETE cascade,
+    	constraint AA primary key (albums_id, artists_id)
 	);
 	
 	create table if not exists Collection(
@@ -45,11 +41,9 @@
 	);
 	
 	create table if not exists CollectionTracks(
-	collection_id integer references Collection(collection_id),
-	tracks_id integer references Tracks(tracks_id),
-	FOREIGN KEY (collection_id) REFERENCES Collection(collection_id) ON DELETE cascade,
-    FOREIGN KEY (tracks_id) REFERENCES Tracks(tracks_id) ON DELETE cascade,
-    constraint CT primary key (collection_id, tracks_id)
+	collection_id integer REFERENCES Collection(collection_id) ON DELETE cascade,
+   	tracks_id integer REFERENCES Tracks(tracks_id) ON DELETE cascade,
+    	constraint CT primary key (collection_id, tracks_id)
 	);
 	
 	
