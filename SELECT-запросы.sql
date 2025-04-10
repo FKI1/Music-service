@@ -121,9 +121,9 @@ SELECT
 FROM 
     tracks t
 LEFT JOIN 
-    collection c ON t.collection_id = c.collection_id
+    collectiontracks ct ON t.tracks_id  = ct.tracks_id
 WHERE 
-    c.collection_id IS NULL;
+    ct.tracks_id IS NULL;
 
 --Названия альбомов, содержащих наименьшее количество треков.
 WITH album_track_counts AS (
